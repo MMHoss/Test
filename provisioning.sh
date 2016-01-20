@@ -50,13 +50,22 @@ openssl x509 -req -in ejemplo.csr -signkey ejemplo.key -out ejemplo.crt
 
 # instalamos Git e descargamos o repositorio dos arquivos de configuracao		
 yum -y install git
+mkdir /home/config-files
 cd /home/config-files
-git clone https://github.com/MMHoss/Centos_6.7.git /home/
+git clone https://github.com/MMHoss/Centos_6.7.git /home/config-files
 
-# copiamos o arquivo de configuracao do Nginx
-cp /home/config-files/nginx.conf /etc/nginx/nginx.conf		
+# copiamos o arquivo de configuracao do Nginx para a pasta dos sites ativos
+cp /home/config-files/ejemplo.com.br.conf /etc/nginx/sites-enabled/ejemplo.com.br.conf
+
+# Modificamos o nginx.conf para incluir a nova configuracao
+sed -i.old 's/conf.d/sites-enabled/' /etc/nginx/nginx.conf
+# fazemos reload do servicio nginx para aplicar os cambios na configuracao
 nginx -s reload
 
 # modificamos a configuracao do tomcat para recever trafego HTTPS do proxy reverso
-sed -i.bkp 's/redirectPort="8443"/redirectPort="8443" scheme="https" proxyName="localhost" proxyPort="443"/' /etc/tomcat/server.xml
+sed -i.old 's/redirectPort="8443"/redirectPort="8443" scheme="https" proxyName="localhost" proxyPort="443"/' /etc/tomcat/server.xml
+# reiniciamos o servicio do tomcat para aplicar os cambios
 service tomcat restart
+
+
+
