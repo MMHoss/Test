@@ -58,5 +58,5 @@ cp /home/config-files/nginx.conf /etc/nginx/nginx.conf
 nginx -s reload
 
 # modificamos a configuracao do tomcat para recever trafego HTTPS do proxy reverso
-sed -i.bkp 's/redirectPort="8443"/redirectPort="8443" proxyName="localhost" proxyPort="443"/' /etc/tomcat/server.xml
+sed -i.bkp 's/redirectPort="8443"/redirectPort="8443" scheme="https" proxyName="localhost" proxyPort="443"/' /etc/tomcat/server.xml
 service tomcat restart
